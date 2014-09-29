@@ -22,3 +22,15 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+bin
+pkg
+
+.DS_Store
+src/code.google.com
+src/github.com
+
+
+# Intellij IDEA
+.idea
+*.iml
