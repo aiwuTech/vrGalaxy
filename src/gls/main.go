@@ -4,18 +4,19 @@
 package main
 
 import (
-	"net"
-	"gls/conf"
-	"fmt"
-	"time"
-	"io"
 	"encoding/binary"
+	"fmt"
+	"gls/conf"
+	"io"
+	"net"
+	"time"
+	"gls/log"
 )
 
 func main() {
 	defer func() {
 		if x := recover(); x != nil {
-
+			log.E("gls caught panic: %v", x)
 		}
 	}()
 
@@ -27,14 +28,17 @@ func main() {
 		panic(fmt.Sprintf("ResolveTCPAddr return error: %v", err))
 	}
 
-	listener, err := net.ListenTCP("tcp", tcpAddr)
+	log.I("trying to startup gls server: %v", tcpAddr)
+	listener, err := net.ListenTCP("tcp4", tcpAddr)
 	if err != nil {
 		panic(fmt.Sprintf("ListenTCP return error: %v", err))
 	}
 
+	log.I("gls server started, listening...")
 	for {
 		conn, err := listener.AcceptTCP()
 		if err != nil {
+			log.T("gls accept client connection return error: %v", err)
 			continue
 		}
 
@@ -57,6 +61,8 @@ func handleClient(conn *net.TCPConn) {
 
 	// handle response to client
 	go outBuffer.HandleClientRsp()
+	// handle request from client
+	go HandleClientReq(inBuffer, outBuffer)
 
 	for {
 		// set tcp timeout
@@ -67,25 +73,28 @@ func handleClient(conn *net.TCPConn) {
 		if err != nil {
 			if err != io.EOF {
 				// log
-				println(n)
+				log.T("gls read client request header return error: %v, read: %v", err, n)
 			}
 			break
 		}
+		log.T("header: %v", header)
 
 		// data
 		size := binary.BigEndian.Uint16(header)
+		log.T("size: %v", size)
 		data := make([]byte, size)
 		n, err = io.ReadFull(conn, data)
 		if err != nil {
 			if err != io.EOF {
 				// log
+				log.T("gls read client request body return error: %v, read: %v", err, n)
 			}
 			break
 		}
 
 		select {
 		case inBuffer <- data:
-		case <- time.After(MAX_DELAY_IN * time.Second):
+		case <-time.After(MAX_DELAY_IN * time.Second):
 			return
 		}
 	}

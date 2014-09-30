@@ -1,0 +1,22 @@
+package pb;
+
+//general response protocol
+message ProtoHeader {
+    required string apiVer		= 1;
+    optional string sessionId	= 2;
+}
+
+message ReqLogin {
+    required string name = 1;
+    required string pwd  = 2;
+}
+
+message RspLogin {
+
+}
+
+message ReqHeartBeat {
+}
+
+message RspHeartBeat {
+}

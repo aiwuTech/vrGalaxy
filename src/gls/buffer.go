@@ -4,8 +4,8 @@
 package main
 
 import (
-	"net"
 	"gls/conf"
+	"net"
 	"utils/packet"
 )
 
@@ -18,19 +18,19 @@ type OutBuffer struct {
 
 func NewBuffer(conn net.Conn, ctrl chan bool) *OutBuffer {
 	return &OutBuffer{
-		ctrl: ctrl,
+		ctrl:    ctrl,
 		pending: make(chan []byte, conf.OutQueueSize),
-		max: conf.OutQueueSize,
-		conn: conn,
+		max:     conf.OutQueueSize,
+		conn:    conn,
 	}
 }
 
 func (buf *OutBuffer) HandleClientRsp() {
-	for{
+	for {
 		select {
-		case data := <- buf.pending:
+		case data := <-buf.pending:
 			buf.rawSend(data)
-		case <- buf.ctrl:
+		case <-buf.ctrl:
 			close(buf.pending)
 			for data := range buf.pending {
 				buf.rawSend(data)
@@ -55,4 +55,6 @@ func (buf *OutBuffer) rawSend(data []byte) {
 	if err != nil {
 		println(n)
 	}
+
+	println("send")
 }

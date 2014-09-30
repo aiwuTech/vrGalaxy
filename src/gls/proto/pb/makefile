@@ -2,7 +2,7 @@ PROTOBF = $(shell find ./ -name '*.proto')
 #OBJECTS = $(subst proto,pb.go,$(PROTOBF))
 OBJECTS = gls.pb.go
 
-TARGET_PATH=../
+TARGET_PATH=./
 
 default: $(OBJECTS)
 	@echo -n
