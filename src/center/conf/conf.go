@@ -10,12 +10,12 @@ import (
 )
 
 const (
-	_GLS_SECTION              = "gls"
+	_CENTER_SECTION           = "center"
 	_LOG_SECTION              = "log"
-	_DEFAULT_GLS_HOST         = ":8888"
+	_DEFAULT_CENTER_HOST      = ":6666"
 	_DEFAULT_IN_SIZE          = 64
 	_DEFAULT_OUT_SIZE         = 15
-	_DEFAULT_LOG_NAME         = "gls.log"
+	_DEFAULT_LOG_NAME         = "center.log"
 	_DEFAULT_LOG_CACHE        = 10000
 	_DEFAULT_LOG_LINE         = 100000
 	_DEFAULT_LOG_DAILY_ROTATE = true
@@ -32,7 +32,7 @@ var (
 
 // configure object
 var (
-	GlsHost      string
+	CenterHost   string
 	InQueueSize  int
 	OutQueueSize int
 
@@ -55,9 +55,9 @@ func init() {
 		panic(fmt.Sprintf("Load LBS configure file return error: %v", err))
 	}
 
-	GlsHost = confObj.MustValue(_GLS_SECTION, "gls_host", _DEFAULT_GLS_HOST)
-	InQueueSize = confObj.MustInt(_GLS_SECTION, "inqueue_size", _DEFAULT_IN_SIZE)
-	OutQueueSize = confObj.MustInt(_GLS_SECTION, "outqueue_size", _DEFAULT_OUT_SIZE)
+	CenterHost = confObj.MustValue(_CENTER_SECTION, "center_host", _DEFAULT_CENTER_HOST)
+	InQueueSize = confObj.MustInt(_CENTER_SECTION, "inqueue_size", _DEFAULT_IN_SIZE)
+	OutQueueSize = confObj.MustInt(_CENTER_SECTION, "outqueue_size", _DEFAULT_OUT_SIZE)
 
 	// log
 	LogName = confObj.MustValue(_LOG_SECTION, "log_name", _DEFAULT_LOG_NAME)
