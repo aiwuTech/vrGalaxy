@@ -33,6 +33,7 @@ func main() {
 	if err != nil {
 		panic(fmt.Sprintf("ListenTCP return error: %v", err))
 	}
+	defer listener.Close()
 
 	log.I("gls server started, listening...")
 	for {
@@ -57,6 +58,7 @@ func handleClient(conn *net.TCPConn) {
 	defer func() {
 		close(bufCtrl)
 		close(inBuffer)
+		conn.Close()
 	}()
 
 	// handle response to client
